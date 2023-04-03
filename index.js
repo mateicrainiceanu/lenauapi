@@ -4,7 +4,6 @@ const multer = require("multer");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 require("dotenv").config();
-
 const Usersql = require("./models/user");
 const Directorsql = require("./models/director.js");
 const Newssql = require("./models/news");
@@ -20,6 +19,7 @@ var storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(null, req.query.name + file.originalname);
   },
+
 });
 
 var upload = multer({ storage: storage }).single("file");
@@ -110,7 +110,7 @@ app.post("/api/performances/delete", async (req, res) => {
 });
 
 app.post("/api/news", async (req, res) => {
-  let [result] = await Newssql.findAll(req.body.skip, req.body.limit);
+  let [result] = await Newssql.findAll(req.body.skip, req.body.limit, req.body.category);
 
   if (result) {
     res.json({ news: result });
@@ -123,7 +123,8 @@ app.post("/api/news/new", async (req, res) => {
   const newNews = new Newssql(
     req.body.news.newsName,
     req.body.news.paragraph,
-    req.body.filename
+    req.body.filename,
+    req.body.news.category
   );
 
   const [result] = await newNews.save();
@@ -143,6 +144,14 @@ app.post("/api/news/delete", async (req, res) => {
   } else {
     res.json({ response: "error" });
   }
+});
+
+app.get('/api/news/categories', async (req, res) => {
+  const [result] = await Newssql.getCategories();
+
+  const categories = [...new Map(result.map(v => [v.category, v.category])).values()]
+
+  res.json({categories: categories})
 });
 
 app.post("/api/upload", (req, res) => {
