@@ -212,7 +212,6 @@ app.post("/acc/delete", async (req, res) => {
 });
 
 app.get("/file", (req, res) => {
-  //res.send("ok")
   res.sendFile(__dirname + "/uploads/" + req.query.name);
 });
 

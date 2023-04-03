@@ -5,6 +5,7 @@ class Performance {
         this.name = performance.name;
         this.paragraphs = JSON.stringify(performance.paragraphs);
         this.imglink = performance.imglink;
+        console.log(this.paragraphs);
     }
 
     async save() {
